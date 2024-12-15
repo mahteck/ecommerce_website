@@ -1,7 +1,3 @@
-import { list } from "postcss";
-import { off, title } from "process";
-import { validation } from "sanity";
-
 export const Product = {
     name: "Product",
     title: "Product",

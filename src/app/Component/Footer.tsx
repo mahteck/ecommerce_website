@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
     return (
         <div>
@@ -13,10 +15,10 @@ export default function Footer() {
                     <div>
                         <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
                         <ul className="text-sm text-gray-400">
-                            <li className="mb-2"><a href="/">Home</a></li>
-                            <li className="mb-2"><a href="/products">Products</a></li>
-                            <li className="mb-2"><a href="/categories">Categories</a></li>
-                            <li><a href="/contact">Contact</a></li>
+                            <li className="mb-2"><Link href="/">Home</Link></li>
+                            <li className="mb-2"><Link href="/products">Products</Link></li>
+                            <li className="mb-2"><Link href="/categories">Category</Link></li>
+                            <li className="mb-2"><Link href="/contact">Contact</Link></li>
                         </ul>
                     </div>
                     <div>
