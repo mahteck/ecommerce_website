@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function CategorySection() {
     return (
         <div>
@@ -21,9 +23,9 @@ export default function CategorySection() {
                             <p className="text-sm text-gray-600 mb-4">
                                 Discover the latest trends in men's wear.
                             </p>
-                            <a href="/Category/MEN" className="text-blue-500 font-semibold hover:text-blue-700">
+                            <Link href="/Category/MEN" className="text-blue-500 font-semibold hover:text-blue-700">
                                 Shop Now
-                            </a>
+                            </Link>
                         </div>
 
                         {/* Women's Clothing */}
@@ -39,9 +41,9 @@ export default function CategorySection() {
                             <p className="text-sm text-gray-600 mb-4">
                                 Stylish outfits for every occasion.
                             </p>
-                            <a href="/Category/WOMEN" className="text-blue-500 font-semibold hover:text-blue-700">
+                            <Link href="/Category/WOMEN" className="text-blue-500 font-semibold hover:text-blue-700">
                                 Shop Now
-                            </a>
+                            </Link>
                         </div>
 
                         {/* Kids' Clothing */}
@@ -57,9 +59,9 @@ export default function CategorySection() {
                             <p className="text-sm text-gray-600 mb-4">
                                 Adorable outfits for your little ones.
                             </p>
-                            <a href="/Category/KIDS" className="text-blue-500 font-semibold hover:text-blue-700">
+                            <Link href="/Category/KIDS" className="text-blue-500 font-semibold hover:text-blue-700">
                                 Shop Now
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
