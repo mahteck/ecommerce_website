@@ -1,6 +1,7 @@
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { FiShoppingCart } from "react-icons/fi";
+import Image from "next/image";
 
 export default async function CategoryPage({ params }) {
     const { slug } = params;
@@ -58,9 +59,11 @@ export default async function CategoryPage({ params }) {
                     <Link href={`/Products/${product.slug}`} key={product.slug || `product-${index}`}>
                         <div className="border p-4 flex flex-col items-center hover:shadow-2xl transition-transform transform hover:scale-105 rounded-lg bg-white">
                             {product.imageUrl && (
-                                <img
+                                <Image
                                     src={product.imageUrl}
                                     alt={product.name}
+                                    width={500}
+                                    height={256}
                                     className="w-full h-64 object-contain mb-4 rounded-lg"
                                 />
                             )}

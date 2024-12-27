@@ -5,6 +5,7 @@ import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { FiShoppingCart } from "react-icons/fi";
 import { useCart } from '@/context/CartContext';
+import Image from 'next/image'; // Importing Next.js Image component
 
 export default function CategoryPage({ params }) {
     const { slug } = React.use(params);  // Unwrap the params object
@@ -80,9 +81,11 @@ export default function CategoryPage({ params }) {
                         <Link href={`/Products/${product.slug}`}>
                             <div className="w-full h-64 mb-4">
                                 {product.imageUrl && (
-                                    <img
+                                    <Image
                                         src={product.imageUrl}
                                         alt={product.name}
+                                        width={500}
+                                        height={500}
                                         className="w-full h-full object-contain rounded-lg"
                                     />
                                 )}

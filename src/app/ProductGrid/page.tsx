@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
+import Image from "next/image";
 
 function ProductGrid({ products }) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -15,9 +16,11 @@ function ProductGrid({ products }) {
                 className="bg-white p-4 rounded shadow-lg"
                 onClick={(e) => e.stopPropagation()}
             >
-                <img
+                <Image
                     src={imageUrl}
                     alt="Product Preview"
+                    width={600}
+                    height={600}
                     className="max-w-full max-h-screen object-contain"
                 />
                 <button
@@ -39,9 +42,11 @@ function ProductGrid({ products }) {
                 >
                     <h2 className="text-lg font-bold mb-2 text-ellipsis overflow-hidden whitespace-normal">{product.name}</h2>
                     {product.imageUrl && (
-                        <img
+                        <Image
                             src={product.imageUrl}
                             alt={product.name}
+                            width={500}
+                            height={200}
                             className="w-full h-48 object-contain mb-2 cursor-pointer"
                             onClick={() => setSelectedImage(product.imageUrl)}
                         />
