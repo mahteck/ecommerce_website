@@ -3,9 +3,27 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import Image from "next/image"; // Importing Image from Next.js
+import Image from "next/image";
 
-export default function ProductDetailClient({ product }) {
+// Define the type for product data
+interface ProductProps {
+    product: {
+        name: string;
+        price: number;
+        imageUrl: string;
+        description?: string;
+        size?: string;
+        gender?: string;
+        type?: string;
+        style?: string;
+        color?: string;
+        Brand?: { name: string };
+        Category?: { name: string };
+        Subcategory?: { name: string };
+    };
+}
+
+export default function ProductDetailClient({ product }: ProductProps) {
     const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
 
