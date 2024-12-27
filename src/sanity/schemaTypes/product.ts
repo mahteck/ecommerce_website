@@ -7,7 +7,7 @@ export const Product = {
             name: "name",
             title: "Name",
             type: "string",
-            validation: (rule: any) => rule.required()
+            validation: (rule) => rule.required()  // No need for ValidationRule import
         },
         {
             name: "slug",
@@ -128,4 +128,4 @@ export const Product = {
             }
         }
     ]
-}
+};

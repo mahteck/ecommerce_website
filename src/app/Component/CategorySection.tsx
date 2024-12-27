@@ -24,7 +24,7 @@ export default function CategorySection() {
                                 Mens Clothing
                             </h3>
                             <p className="text-sm text-gray-600 mb-4">
-                                Discover the latest trends in men's wear.
+                                Discover the latest trends in mens wear.
                             </p>
                             <Link href="/Category/MEN" className="text-blue-500 font-semibold hover:text-blue-700">
                                 Shop Now
