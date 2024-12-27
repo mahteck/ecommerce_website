@@ -5,25 +5,27 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
 
-// Define the type for product data
-interface ProductProps {
-    product: {
-        name: string;
-        price: number;
-        imageUrl: string;
-        description?: string;
-        size?: string;
-        gender?: string;
-        type?: string;
-        style?: string;
-        color?: string;
-        Brand?: { name: string };
-        Category?: { name: string };
-        Subcategory?: { name: string };
-    };
+// Define the type for the product data
+interface Product {
+    name: string;
+    price: number;
+    imageUrl: string;
+    description?: string;
+    size?: string;
+    gender?: string;
+    type?: string;
+    style?: string;
+    color?: string;
+    Brand?: { name: string };
+    Category?: { name: string };
+    Subcategory?: { name: string };
 }
 
-export default function ProductDetailClient({ product }: ProductProps) {
+interface ProductDetailClientProps {
+    product: Product;
+}
+
+const ProductDetailClient: React.FC<ProductDetailClientProps> = ({ product }) => {
     const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
 
@@ -142,4 +144,6 @@ export default function ProductDetailClient({ product }: ProductProps) {
             </div>
         </div>
     );
-}
+};
+
+export default ProductDetailClient;
