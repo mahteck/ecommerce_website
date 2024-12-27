@@ -1,0 +1,40 @@
+import { NextResponse } from "next/server";
+
+// Dummy function to calculate shipment charges
+const getShipmentCharges = (shipmentDetails: { weight: any; distance: any; }) => {
+    const { weight, distance } = shipmentDetails;
+
+    const baseRate = 10; // Base rate in dollars
+    const weightCharge = weight * 0.5; // $0.5 per kg
+    const distanceCharge = distance * 0.1; // $0.1 per km
+
+    const totalCharges = baseRate + weightCharge + distanceCharge;
+
+    return {
+        carrier: "Dummy Carrier",
+        service: "Standard",
+        charges: totalCharges.toFixed(2), // Rounded to 2 decimal places
+        deliveryTime: "5-7 days",
+    };
+};
+
+// API Route Handler
+export async function POST(req: { json: () => any; }) {
+    try {
+        const shipmentDetails = await req.json();
+        console.log("Received shipment details:", shipmentDetails);
+
+        // Check for missing data
+        if (!shipmentDetails.weight || !shipmentDetails.distance) {
+            return NextResponse.json({ error: "Missing required fields (weight or distance)" }, { status: 400 });
+        }
+
+        const charges = getShipmentCharges(shipmentDetails);
+
+        // Return calculated charges in response
+        return NextResponse.json({ rates: charges }, { status: 200 });
+    } catch (error) {
+        console.error("Error in shipment calculation:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}

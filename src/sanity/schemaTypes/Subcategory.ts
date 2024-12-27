@@ -1,7 +1,7 @@
 
-export const Category = {
-    name: "category",
-    title: "Category",
+export const SubCategory = {
+    name: "Subcategory",
+    title: "Subcategory",
     type: "document",
 
     fields: [
@@ -17,12 +17,6 @@ export const Category = {
             options: {
                 source: "name",
             },
-        },
-        {
-            name: "SubCategory",
-            title: "SubCategory",
-            type: "array",
-            of: [{ type: "reference", to: { type: "Subcategory" } }],
-        },
+        }
     ]
 }
