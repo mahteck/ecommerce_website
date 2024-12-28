@@ -1,33 +1,13 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import Image from "next/image";
 
-// Define the type for the product data
-interface Product {
-    name: string;
-    price: number;
-    imageUrl: string;
-    description?: string;
-    size?: string;
-    gender?: string;
-    type?: string;
-    style?: string;
-    color?: string;
-    Brand?: { name: string };
-    Category?: { name: string };
-    Subcategory?: { name: string };
-}
-
-interface ProductDetailClientProps {
-    product: Product;
-}
-
-const ProductDetailClient: React.FC<ProductDetailClientProps> = ({ product }) => {
+export default function ProductDetailClient({ product }) {
     const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
+
 
     // Calculate total price
     const totalPrice = product.price ? (product.price + 10) * quantity : 0;
@@ -54,11 +34,9 @@ const ProductDetailClient: React.FC<ProductDetailClientProps> = ({ product }) =>
                 {/* Left Section - Product Image */}
                 <div className="w-full md:w-1/2 p-4">
                     {product.imageUrl ? (
-                        <Image
+                        <img
                             src={product.imageUrl}
                             alt={product.name}
-                            width={500}  // Set the image width
-                            height={500} // Set the image height
                             className="w-full h-auto object-cover rounded-md"
                         />
                     ) : (
@@ -144,6 +122,4 @@ const ProductDetailClient: React.FC<ProductDetailClientProps> = ({ product }) =>
             </div>
         </div>
     );
-};
-
-export default ProductDetailClient;
+}

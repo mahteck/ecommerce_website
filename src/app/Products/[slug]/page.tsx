@@ -1,4 +1,4 @@
-import ProductDetailClient from "@/app/ProductDetailClient/page";
+import ProductDetailClient from "@/app/Component/ProductDetailClient";
 import { client } from "@/sanity/lib/client";
 
 export default async function ProductDetailPage({ params }) {
