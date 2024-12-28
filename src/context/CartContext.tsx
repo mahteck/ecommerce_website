@@ -1,34 +1,20 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from "react";
+import { CartContextType, CartItem } from "./CartContextTypes";
+// import { CartItem, CartContextType } from "@/context/CartContextTypes";
 
-const CartContext = createContext();
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const useCart = () => useContext(CartContext);
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [cart, setCart] = useState<CartItem[]>([]);
 
-export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState([]);
-
-    useEffect(() => {
-        // Load cart from localStorage (or sessionStorage)
-        const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-        setCart(savedCart);
-    }, []);
-
-    const addToCart = (item) => {
-        setCart((prevCart) => {
-            const updatedCart = [...prevCart, item];
-            localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save to localStorage
-            return updatedCart;
-        });
+    const addToCart = (item: CartItem) => {
+        setCart((prev) => [...prev, item]);
     };
 
-    const removeFromCart = (itemName) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.filter(item => item.name !== itemName);
-            localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save to localStorage
-            return updatedCart;
-        });
+    const removeFromCart = (name: string) => {
+        setCart((prev) => prev.filter((item) => item.name !== name));
     };
 
     return (
@@ -36,4 +22,12 @@ export const CartProvider = ({ children }) => {
             {children}
         </CartContext.Provider>
     );
+};
+
+export const useCart = () => {
+    const context = useContext(CartContext);
+    if (!context) {
+        throw new Error("useCart must be used within a CartProvider");
+    }
+    return context;
 };
