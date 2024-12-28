@@ -1,11 +1,16 @@
-
 import React from 'react';
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import Image from 'next/image';
 import CartButton from '@/app/Component/CartButton';
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
+interface CategoryPageProps {
+    params: {
+        slug: string;
+    };
+}
+
+export default async function CategoryPage({ params }: CategoryPageProps) {
     const { slug } = params;
 
     const data = await client.fetch(
