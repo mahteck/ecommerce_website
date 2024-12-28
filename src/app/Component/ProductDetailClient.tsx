@@ -25,7 +25,7 @@ export default function ProductDetailClient({ product }) {
     const handleAddToCart = () => {
         const productWithQuantity = { ...product, quantity }; // Include quantity in the product data
         addToCart(productWithQuantity); // Add product to cart
-        console.log(productWithQuantity);
+        //console.log(productWithQuantity);
     };
 
     return (

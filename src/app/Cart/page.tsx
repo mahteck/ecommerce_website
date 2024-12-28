@@ -9,7 +9,8 @@ export default function CartPage() {
     const [isClient, setIsClient] = useState(false); // Track client-side rendering
     const [shippingCharges, setShippingCharges] = useState(0); // Store shipping charges
     const [loading, setLoading] = useState(true); // Handle loading state for the API call
-    const [error, setError] = useState(null); // Handle API errors
+    // const [error, setError] = useState(null); // Handle API errors
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -64,7 +65,8 @@ export default function CartPage() {
     const handleCheckout = () => {
         if (isClient) {
             sessionStorage.setItem('cart', JSON.stringify(cart));
-            sessionStorage.setItem('total', grandTotal);
+            // sessionStorage.setItem('total', grandTotal);
+            sessionStorage.setItem("total", grandTotal.toString());
             router.push("/Checkout");
         }
     };
