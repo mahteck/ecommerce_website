@@ -5,14 +5,21 @@ import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { FiShoppingCart } from "react-icons/fi";
 import { useCart } from '@/context/CartContext';
-import Image from 'next/image'; // Importing Next.js Image component
+import Image from 'next/image';
 
-export default function CategoryPage({ params }) {
-    const { slug } = React.use(params);  // Unwrap the params object
+interface CategoryPageProps {
+    params: {
+        slug: string;
+    };
+}
+
+export default function CategoryPage({ params }: CategoryPageProps) {
+    // const { slug } = React.use(params);  // Unwrap the params object
+    const { slug } = params;
 
     const [products, setProducts] = useState([]);
     const [category, setCategory] = useState(null);
-    const { addToCart } = useCart(); // Access the addToCart function from the CartContext
+    const { addToCart } = useCart();
 
     // Fetch the data when the component mounts
     useEffect(() => {
@@ -44,7 +51,7 @@ export default function CategoryPage({ params }) {
         fetchData();
     }, [slug]); // Only fetch data when the slug changes
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = (product: any) => {
         addToCart(product); // Add the product to the cart
     };
 
