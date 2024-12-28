@@ -1,13 +1,33 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image"; // Import the Image component from Next.js
 import { useCart } from "@/context/CartContext";
 
-export default function ProductDetailClient({ product }) {
+// Define the type for the product
+interface Product {
+    imageUrl: string;
+    name: string;
+    price: number;
+    description: string;
+    size?: string;
+    gender?: string;
+    type?: string;
+    style?: string;
+    color?: string;
+    Brand?: { name: string };
+    Category?: { name: string };
+    Subcategory?: { name: string };
+}
+
+interface ProductDetailClientProps {
+    product: Product;
+}
+
+export default function ProductDetailClient({ product }: ProductDetailClientProps) {
     const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
-
 
     // Calculate total price
     const totalPrice = product.price ? (product.price + 10) * quantity : 0;
@@ -34,9 +54,11 @@ export default function ProductDetailClient({ product }) {
                 {/* Left Section - Product Image */}
                 <div className="w-full md:w-1/2 p-4">
                     {product.imageUrl ? (
-                        <img
+                        <Image
                             src={product.imageUrl}
                             alt={product.name}
+                            width={500}  // Set a desired width
+                            height={500} // Set a desired height
                             className="w-full h-auto object-cover rounded-md"
                         />
                     ) : (
