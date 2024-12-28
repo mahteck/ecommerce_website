@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { FiShoppingCart } from "react-icons/fi";
-import { useCart } from '@/context/CartContext';
+import { CartItem, useCart } from '@/context/CartContext';
 import Image from 'next/image';
 
 interface CategoryPageProps {
@@ -51,7 +51,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         fetchData();
     }, [slug]); // Only fetch data when the slug changes
 
-    const handleAddToCart = (product: any) => {
+    const handleAddToCart = (product: CartItem) => {
         addToCart(product); // Add the product to the cart
     };
 
