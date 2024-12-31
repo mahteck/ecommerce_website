@@ -1,10 +1,23 @@
-import ProductDetailClient from "@/app/Component/ProductDetailClient";
 import { client } from "@/sanity/lib/client";
+import ProductDetailClient from "@/app/Component/ProductDetailClient";
+import { Params } from 'next/dist/server/request/params';
 
-export default async function ProductDetailPage({ params }) {
+// Define Params type
+// type Params = {
+//     slug: string;
+// };
+
+export default async function ProductDetailPage(context: { params: Promise<Params> }) {
+    // const { slug } = params; // Directly destructure the slug
+    const params = await context.params;
+
+    if (!params || !params.slug) {
+        return <div>Error: Invalid category slug.</div>;
+    }
+
     const { slug } = params;
 
-    // Fetch product details
+    // Fetch product details using the slug parameter
     const product = await client.fetch(
         `*[_type == "Product" && slug.current == $slug][0]{
             name,
@@ -29,6 +42,7 @@ export default async function ProductDetailPage({ params }) {
         { slug }
     );
 
+    // Handle the case where the product is not found
     if (!product) {
         return (
             <div className="container mx-auto p-4">
@@ -37,5 +51,6 @@ export default async function ProductDetailPage({ params }) {
         );
     }
 
+    // Return the product details to the ProductDetailClient component
     return <ProductDetailClient product={product} />;
 }

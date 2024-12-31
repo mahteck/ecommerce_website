@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+// Define CartItem and CartContextType interfaces
 export interface CartItem {
     name: string;
     price: number;
@@ -11,50 +12,52 @@ export interface CartItem {
 }
 
 export interface CartContextType {
-    cart: CartItem[];
-    removeFromCart: (name: string) => void;
+    cartItems: CartItem[];  // cartItems is the name used
     addToCart: (item: CartItem) => void;
+    removeFromCart: (name: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [cart, setCart] = useState<CartItem[]>([]);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
+    // Load cart items from localStorage if available
     useEffect(() => {
         try {
             const savedCart = localStorage.getItem('cart');
-            setCart(savedCart ? JSON.parse(savedCart) : []);
+            setCartItems(savedCart ? JSON.parse(savedCart) : []);
         } catch (error) {
             console.error("Error parsing cart data from localStorage:", error);
-            setCart([]); // Reset to an empty cart on error
+            setCartItems([]); // Reset to an empty cart on error
         }
     }, []);
 
     const addToCart = (item: CartItem) => {
-        setCart((prevCart) => {
-            const updatedCart = [...prevCart, item];
-            localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save to localStorage
-            return updatedCart;
+        setCartItems((prevCartItems) => {
+            const updatedCartItems = [...prevCartItems, item];
+            localStorage.setItem('cart', JSON.stringify(updatedCartItems)); // Save to localStorage
+            return updatedCartItems;
         });
     };
 
     const removeFromCart = (name: string) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.filter(item => item.name !== name);
-            localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save to localStorage
-            return updatedCart;
+        setCartItems((prevCartItems) => {
+            const updatedCartItems = prevCartItems.filter(item => item.name !== name);
+            localStorage.setItem('cart', JSON.stringify(updatedCartItems)); // Save to localStorage
+            return updatedCartItems;
         });
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
             {children}
         </CartContext.Provider>
     );
 };
 
-export const useCart = () => {
+// Custom hook to access the CartContext
+export const useCart = (): CartContextType => {
     const context = useContext(CartContext);
     if (!context) {
         throw new Error("useCart must be used within a CartProvider");

@@ -1,5 +1,5 @@
 import { defineType, defineArrayMember } from 'sanity'
-import { ImageIcon } from '@sanity/icons'
+// import { ImageIcon } from '@sanity/icons'
 
 
 export const blockContentType = defineType({
@@ -41,7 +41,7 @@ export const blockContentType = defineType({
         }),
         defineArrayMember({
             type: 'image',
-            icon: ImageIcon,
+            // icon: ImageIcon,
             options: { hotspot: true },
             fields: [
                 {

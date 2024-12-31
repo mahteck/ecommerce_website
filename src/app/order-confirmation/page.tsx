@@ -2,13 +2,22 @@
 
 import React, { useEffect, useState } from 'react';
 
+// Define the type for order details
+interface OrderDetails {
+    cartItems: { name: string; price: number; quantity: number }[];
+    total: number;
+    trackingNumber: string;
+}
+
 export default function OrderConfirmationPage() {
-    const [orderDetails, setOrderDetails] = useState(null);
+    const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null); // Using the defined type
 
     useEffect(() => {
         // Retrieve order details from session storage
-        const savedOrderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
-        setOrderDetails(savedOrderDetails);
+        const savedOrderDetails = sessionStorage.getItem('orderDetails');
+        if (savedOrderDetails) {
+            setOrderDetails(JSON.parse(savedOrderDetails));
+        }
     }, []);
 
     if (!orderDetails) {

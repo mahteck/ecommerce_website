@@ -3,17 +3,37 @@ import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import Image from 'next/image';
 import CartButton from '@/app/Component/CartButton';
+import { Params } from 'next/dist/server/request/params';
 
-interface CategoryPageProps {
-    params: {
-        slug: string;
-    };
+interface SubCategory {
+    name: string;
+    slug: string;
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
+interface Category {
+    name: string;
+    slug: string;
+    SubCategory?: SubCategory[];
+}
+
+interface Product {
+    name: string;
+    price: number | null;
+    imageUrl: string;
+    slug: string;
+    category: Category | null;
+}
+
+export default async function CategoryPage(context: { params: Promise<Params> }) {
+    const params = await context.params;
+
+    if (!params || !params.slug) {
+        return <div>Error: Invalid category slug.</div>;
+    }
+
     const { slug } = params;
 
-    const data = await client.fetch(
+    const data: Product[] = await client.fetch(
         `*[_type == "Product" && Category->slug.current == $slug]{
             name,
             price,
@@ -31,8 +51,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         { slug }
     );
 
-    const category = data.length > 0 ? data[0].category : null;
-    const products = data;
+    const category: Category | null = data.length > 0 ? data[0].category : null;
+    const products: Product[] = data;
 
     return (
         <div className="container mx-auto p-4">
@@ -40,10 +60,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 Products for {category?.name || "Unknown Category"}
             </h1>
 
-            {category?.SubCategory?.length > 0 && (
+            {Array.isArray(category?.SubCategory) && category?.SubCategory.length > 0 && (
                 <div className="mb-6">
                     <ul className="flex flex-wrap gap-4 border-b pb-2 justify-center">
-                        {category.SubCategory.map((subcategory) => (
+                        {category.SubCategory.map((subcategory: SubCategory) => (
                             <li key={subcategory.slug} className="flex-shrink-0">
                                 <Link
                                     href={`/SubCategory/${subcategory.slug}`}
@@ -57,38 +77,52 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </div>
             )}
 
-            {/* Product Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
                 {products.length > 0 ? (
-                    products.map((product, index) => (
-                        <div key={product.slug || `product-${index}`} className="border p-4 flex flex-col items-center hover:shadow-2xl transition-transform transform hover:scale-105 rounded-lg bg-white">
-                            <Link href={`/Products/${product.slug}`}>
-                                <div className="w-full h-64 mb-4">
-                                    {product.imageUrl && (
-                                        <Image
-                                            src={product.imageUrl}
-                                            alt={product.name}
-                                            width={500}
-                                            height={500}
-                                            className="w-full h-full object-contain rounded-lg"
-                                        />
-                                    )}
-                                </div>
-                            </Link>
+                    products.map((product: Product, index: number) => {
+                        // const totalPrice = product.price ? product.price * 1 : 0;
 
-                            <h2 className="text-lg font-semibold text-center text-gray-800 mb-2">{product.name}</h2>
+                        return (
+                            <div
+                                key={product.slug || `product-${index}`}
+                                className="border p-4 flex flex-col items-center hover:shadow-2xl transition-transform transform hover:scale-105 rounded-lg bg-white"
+                            >
+                                <Link href={`/Products/${product.slug}`}>
+                                    <div className="w-full h-64 mb-4">
+                                        {product.imageUrl && (
+                                            <Image
+                                                src={product.imageUrl}
+                                                alt={product.name}
+                                                width={500}
+                                                height={500}
+                                                className="w-full h-full object-contain rounded-lg"
+                                            />
+                                        )}
+                                    </div>
+                                </Link>
 
-                            <p className="text-gray-700 text-center mb-4">${product.price ?? "Price unavailable"}</p>
+                                <h2 className="text-lg font-semibold text-center text-gray-800 mb-2">
+                                    {product.name}
+                                </h2>
 
-                            <CartButton product={{
-                                ...product,
-                                quantity: 1,
-                                totalPrice: product.price // Pass product with price and quantity
-                            }} />
-                        </div>
-                    ))
+                                <p className="text-gray-700 text-center mb-4">
+                                    ${product.price ?? "Price unavailable"}
+                                </p>
+
+                                <CartButton
+                                    product={{
+                                        ...product,
+                                        quantity: 1,
+                                        price: product.price ?? 0, // Default to 0 if price is null
+                                    }}
+                                />
+                            </div>
+                        );
+                    })
                 ) : (
-                    <p className="text-center text-gray-500">No products found for this category.</p>
+                    <p className="text-center text-gray-500">
+                        No products found for this category.
+                    </p>
                 )}
             </div>
         </div>

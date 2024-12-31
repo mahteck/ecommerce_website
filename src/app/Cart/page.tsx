@@ -5,25 +5,15 @@ import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-    const { cart, removeFromCart } = useCart();
-    const [isClient, setIsClient] = useState(false); // Track client-side rendering
-    const [shippingCharges, setShippingCharges] = useState(0); // Store shipping charges
-    const [loading, setLoading] = useState(true); // Handle loading state for the API call
-    // const [error, setError] = useState(null); // Handle API errors
+    const { cartItems, removeFromCart } = useCart();  // Use cartItems here
+    const [isClient, setIsClient] = useState(false);
+    const [shippingCharges, setShippingCharges] = useState(0);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
         setIsClient(true);
-
-        // const weight = cart.reduce(
-        //     (total, item) => total + item.weight2 * item.quantity,
-        //     0
-        // );
-
-        // const calculateTotalWeight = () => {
-        //     return cart.reduce((totalWeight, item) => totalWeight + item.weight * item.quantity, 0);
-        // };
 
         const weight = 10;
         const distance = 100;
@@ -55,18 +45,16 @@ export default function CartPage() {
         };
 
         fetchShippingCharges();
-    }, [cart]); // Update when cart changes
+    }, [cartItems]);  // Update when cartItems changes
 
-    const calculateTotal = () =>
-        cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    const calculateTotal = () => cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
     const grandTotal = calculateTotal() + shippingCharges;
 
     const handleCheckout = () => {
         if (isClient) {
-            sessionStorage.setItem('cart', JSON.stringify(cart));
-            // sessionStorage.setItem('total', grandTotal);
-            sessionStorage.setItem("total", grandTotal.toString());
+            sessionStorage.setItem('cart', JSON.stringify(cartItems));  // Save cartItems to session
+            sessionStorage.setItem("total", grandTotal.toString());  // Save grand total to session
             router.push("/Checkout");
         }
     };
@@ -75,7 +63,7 @@ export default function CartPage() {
         <div className="container mx-auto p-6">
             <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
 
-            {cart.length === 0 ? (
+            {cartItems.length === 0 ? (
                 <p className="text-lg text-gray-500">Your cart is empty.</p>
             ) : (
                 <>
@@ -91,7 +79,7 @@ export default function CartPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {cart.map((item, index) => (
+                                {cartItems.map((item, index) => (
                                     <tr key={index} className="even:bg-gray-50">
                                         <td className="border px-4 py-2">{item.name}</td>
                                         <td className="border px-4 py-2">{item.price}</td>

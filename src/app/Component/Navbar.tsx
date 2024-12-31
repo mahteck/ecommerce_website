@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { useState, useEffect } from "react";
 import { FiShoppingCart, FiUser, FiMenu } from "react-icons/fi";
@@ -6,14 +6,25 @@ import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
+// Define the type for Category and SubCategory
+type SubCategory = {
+    name: string;
+    slug: string;
+};
+
+type Category = {
+    name: string;
+    slug: string;
+    SubCategory?: SubCategory[]; // SubCategory is optional
+};
+
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [categories, setCategories] = useState([]);
-    const { cartItems } = useCart();
+    const [categories, setCategories] = useState<Category[]>([]); // Set explicit type for categories
+    const { cartItems } = useCart();  // Correct usage of cartItems
 
     const cartCount = Array.isArray(cartItems) ? cartItems.length : 0;
 
-    // Fetch categories and subcategories from Sanity
     useEffect(() => {
         async function fetchCategories() {
             const data = await client.fetch(`
@@ -95,7 +106,7 @@ export default function Navbar() {
                                 <Link href={`/Category/${category.slug}`} className="text-gray-800 hover:text-purple-600 font-medium">
                                     {category.name}
                                 </Link>
-                                {category.SubCategory?.length > 0 && (
+                                {category.SubCategory && category.SubCategory.length > 0 && ( // Safe check
                                     <ul className="absolute left-0 hidden group-hover:flex flex-col bg-white text-gray-800 shadow-lg p-4 mt-2 w-48 z-10 transition duration-200 ease-in-out">
                                         {category.SubCategory.map((SubCategory, subIndex) => (
                                             <li key={`subcategory-${index}-${subIndex}`} className="mb-2">

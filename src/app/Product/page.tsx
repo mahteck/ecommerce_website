@@ -1,14 +1,31 @@
-"use client";
+'use client';
 import { useState, useEffect } from "react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { FiShoppingCart } from "react-icons/fi";
 
+// Define a more specific type for the image
+type ImageType = {
+    _type: string;
+    asset: {
+        _ref: string;
+        _type: string;
+    };
+};
+
+type Product = {
+    name: string;
+    description: string;
+    price: number;
+    image: ImageType; // Use the ImageType for image field
+    category: { name: string };
+};
+
 export default function Product() {
-    const [data, setData] = useState([]); // State for fetched products
+    const [data, setData] = useState<Product[]>([]); // Explicitly typing the data state
     const [loading, setLoading] = useState(true); // Loading state
-    const [selectedImage, setSelectedImage] = useState(null); // State for image preview
+    const [selectedImage, setSelectedImage] = useState<string | null>(null); // State for image preview
     const [isOpen, setIsOpen] = useState(false); // Modal visibility state
 
     // Fetch data on component mount
@@ -29,7 +46,7 @@ export default function Product() {
     }, []);
 
     // Handle image click to open modal
-    const handleImageClick = (imageUrl) => {
+    const handleImageClick = (imageUrl: string) => {
         setSelectedImage(imageUrl);
         setIsOpen(true);
     };
@@ -66,11 +83,7 @@ export default function Product() {
                                 onClick={() => handleImageClick(urlFor(item.image).url())}
                             >
                                 <Image
-                                    src={
-                                        item.image
-                                            ? urlFor(item.image).url()
-                                            : "/placeholder.jpg"
-                                    }
+                                    src={item.image ? urlFor(item.image).url() : "/placeholder.jpg"}
                                     alt={item.name || "Product Image"}
                                     width={160}
                                     height={160}
@@ -115,7 +128,7 @@ export default function Product() {
                             &times;
                         </button>
                         <Image
-                            src={selectedImage}
+                            src={selectedImage || "/placeholder.jpg"}
                             alt="Zoomed Preview"
                             width={800}
                             height={800}

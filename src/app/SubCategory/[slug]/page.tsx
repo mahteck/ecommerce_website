@@ -2,12 +2,38 @@ import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
+import { Params } from "next/dist/server/request/params";
 
-export default async function CategoryPage({ params }) {
+interface SubCategory {
+    name: string;
+    slug: string;
+}
+
+interface Category {
+    name: string;
+    slug: string;
+    SubCategory: SubCategory[];
+}
+
+interface Product {
+    name: string;
+    price: number;
+    imageUrl: string;
+    slug: string;
+    category: Category | null;
+}
+
+export default async function SubCategoryPage(context: { params: Promise<Params> }) {
+    const params = await context.params;
+
+    if (!params || !params.slug) {
+        return <div>Error: Invalid category slug.</div>;
+    }
+
     const { slug } = params;
 
     // Fetch category details and products
-    const data = await client.fetch(
+    const data: Product[] = await client.fetch(
         `*[_type == "Product" && Subcategory->slug.current == $slug]{
             name,
             price,
@@ -25,8 +51,7 @@ export default async function CategoryPage({ params }) {
         { slug }
     );
 
-    // Extract the category details
-    const category = data.length > 0 ? data[0].category : null;
+    const category: Category | null = data.length > 0 ? data[0].category : null;
 
     return (
         <div className="container mx-auto p-4">
@@ -36,10 +61,10 @@ export default async function CategoryPage({ params }) {
             </h1>
 
             {/* Subcategories Horizontal List */}
-            {category?.SubCategory?.length > 0 && (
+            {category?.SubCategory && category.SubCategory.length > 0 && (
                 <div className="mb-6">
                     <ul className="flex flex-wrap gap-4 justify-center border-b pb-2">
-                        {category.SubCategory.map((subcategory) => (
+                        {category.SubCategory.map((subcategory: SubCategory) => (
                             <li key={subcategory.slug} className="flex-shrink-0">
                                 <Link
                                     href={`/SubCategory/${subcategory.slug}`}

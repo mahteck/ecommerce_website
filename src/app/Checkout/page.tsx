@@ -3,60 +3,31 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 
+// Define the CartItem type
+type CartItem = {
+    name: string;
+    price: number;
+    quantity: number;
+};
+
 export default function CheckoutPage() {
-    const [isClient, setIsClient] = useState(false); // Client-side check
-    const [cartItems, setCartItems] = useState([]);
-    const [shippingAddress, setShippingAddress] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("");
-    const [total, setTotal] = useState(0);
+    const [isClient, setIsClient] = useState(false);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [shippingAddress, setShippingAddress] = useState<string>("");
+    const [paymentMethod, setPaymentMethod] = useState<string>("");
+    const [total, setTotal] = useState<number>(0);
 
     useEffect(() => {
-        setIsClient(true); // Mark component as mounted in the client
-        const savedCart = JSON.parse(sessionStorage.getItem('cart')) || [];
+        setIsClient(true);
+
+        const savedCart = sessionStorage.getItem('cart');
+        setCartItems(savedCart ? JSON.parse(savedCart) : []);
+
         const savedTotal = sessionStorage.getItem('total');
-        setCartItems(savedCart);
-        setTotal(savedTotal);
+        setTotal(savedTotal ? parseFloat(savedTotal) : 0); // Convert total to a number
     }, []);
 
     const router = useRouter();
-
-    // const handlePlaceOrder = async () => {
-    //     const orderData = {
-    //         cartItems: cartItems,
-    //         shippingAddress: shippingAddress,
-    //         paymentMethod: paymentMethod,
-    //         total: total
-    //     };
-
-    //     console.log(cartItems);
-    //     console.log(shippingAddress);
-    //     console.log(paymentMethod);
-    //     console.log(total);
-
-    //     try {
-    //         const response = await fetch('/api/place-order', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(orderData), // Send the order data as JSON
-    //         });
-
-    //         if (!response.ok) {
-    //             const errorData = await response.json();
-    //             console.error('Error placing order:', errorData);
-    //             alert('Error placing order: ' + errorData.message);
-    //             return;
-    //         }
-
-    //         const data = await response.json();
-    //         alert(data.message);
-    //         router.push('/order-confirmation');
-    //     } catch (error) {
-    //         console.error('Error placing order:', error);
-    //         alert('Error placing order');
-    //     }
-    // };
 
     const handlePlaceOrder = async () => {
         if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -90,14 +61,11 @@ export default function CheckoutPage() {
                     trackingNumber,
                 };
 
-                // Save order details for the confirmation page
                 sessionStorage.setItem('orderDetails', JSON.stringify(confirmationDetails));
 
-                // Clear the cart
                 sessionStorage.removeItem('cart');
                 setCartItems([]);
 
-                // Redirect to confirmation page
                 router.push('/order-confirmation');
             } else {
                 const errorData = await response.json();
@@ -110,10 +78,8 @@ export default function CheckoutPage() {
         }
     };
 
-
-
     if (!isClient) {
-        return <div>Loading...</div>; // Return loading state until client-side rendering
+        return <div>Loading...</div>;
     }
 
     return (
@@ -140,9 +106,9 @@ export default function CheckoutPage() {
                                 {cartItems.map((item, index) => (
                                     <tr key={index}>
                                         <td className="border px-4 py-2">{item.name}</td>
-                                        <td className="border px-4 py-2">${item.price}</td>
+                                        <td className="border px-4 py-2">${item.price.toFixed(2)}</td>
                                         <td className="border px-4 py-2">{item.quantity}</td>
-                                        <td className="border px-4 py-2">${item.price * item.quantity}</td>
+                                        <td className="border px-4 py-2">${(item.price * item.quantity).toFixed(2)}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -159,7 +125,7 @@ export default function CheckoutPage() {
                     placeholder="Enter your shipping address"
                     value={shippingAddress}
                     onChange={(e) => setShippingAddress(e.target.value)}
-                    rows="4"
+                    rows={4} // Pass a number instead of a string
                 />
             </div>
 
@@ -182,7 +148,7 @@ export default function CheckoutPage() {
             <div className="mb-6">
                 <h2 className="text-2xl font-semibold mb-4">Order Summary</h2>
                 <div className="border p-4 rounded-lg">
-                    <p className="text-lg">Total: ${total}</p>
+                    <p className="text-lg">Total: ${total.toFixed(2)}</p>
                     <button
                         className="mt-4 px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700"
                         onClick={handlePlaceOrder}

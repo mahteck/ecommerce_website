@@ -7,7 +7,7 @@ export const Product = {
             name: "name",
             title: "Name",
             type: "string",
-            validation: (rule) => rule.required()  // No need for ValidationRule import
+            // validation: (rule) => rule.required()  // No need for ValidationRule import
         },
         {
             name: "slug",
