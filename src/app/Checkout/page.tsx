@@ -63,10 +63,19 @@ export default function CheckoutPage() {
 
                 sessionStorage.setItem('orderDetails', JSON.stringify(confirmationDetails));
 
+                // Clear the cart
                 sessionStorage.removeItem('cart');
-                setCartItems([]);
+                sessionStorage.removeItem('cartItems');
+                setCartItems([]); // Clear the cartItems state
+                setTotal(0); // Reset the total
 
-                router.push('/order-confirmation');
+                console.log('Cart cleared:', { sessionStorage: sessionStorage.getItem('cart'), cartItems });
+
+                // Redirect to order confirmation page after a small delay
+                setTimeout(() => {
+                    router.push('/order-confirmation');
+                }, 500);
+
             } else {
                 const errorData = await response.json();
                 console.error('Error placing order:', errorData.message || response.statusText);
@@ -83,32 +92,32 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-4">Checkout</h1>
+        <div className="container mx-auto p-4 sm:p-6">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-center">Checkout</h1>
 
             {/* Cart Items */}
             <div className="mb-6">
-                <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
-                <div className="border p-4 rounded-lg">
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4">Your Cart</h2>
+                <div className="border p-4 rounded-lg overflow-x-auto">
                     {cartItems.length === 0 ? (
-                        <p>Your cart is empty.</p>
+                        <p className="text-gray-600">Your cart is empty.</p>
                     ) : (
                         <table className="w-full text-left table-auto">
                             <thead>
                                 <tr className="bg-gray-100">
-                                    <th className="border px-4 py-2 text-sm font-medium">Product</th>
-                                    <th className="border px-4 py-2 text-sm font-medium">Price</th>
-                                    <th className="border px-4 py-2 text-sm font-medium">Quantity</th>
-                                    <th className="border px-4 py-2 text-sm font-medium">Total</th>
+                                    <th className="border px-2 sm:px-4 py-2 text-sm font-medium">Product</th>
+                                    <th className="border px-2 sm:px-4 py-2 text-sm font-medium">Price</th>
+                                    <th className="border px-2 sm:px-4 py-2 text-sm font-medium">Quantity</th>
+                                    <th className="border px-2 sm:px-4 py-2 text-sm font-medium">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {cartItems.map((item, index) => (
                                     <tr key={index}>
-                                        <td className="border px-4 py-2">{item.name}</td>
-                                        <td className="border px-4 py-2">${item.price.toFixed(2)}</td>
-                                        <td className="border px-4 py-2">{item.quantity}</td>
-                                        <td className="border px-4 py-2">${(item.price * item.quantity).toFixed(2)}</td>
+                                        <td className="border px-2 sm:px-4 py-2">{item.name}</td>
+                                        <td className="border px-2 sm:px-4 py-2">${item.price.toFixed(2)}</td>
+                                        <td className="border px-2 sm:px-4 py-2">{item.quantity}</td>
+                                        <td className="border px-2 sm:px-4 py-2">${(item.price * item.quantity).toFixed(2)}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -119,19 +128,19 @@ export default function CheckoutPage() {
 
             {/* Shipping Address */}
             <div className="mb-6">
-                <h2 className="text-2xl font-semibold mb-4">Shipping Address</h2>
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4">Shipping Address</h2>
                 <textarea
                     className="w-full p-2 border border-gray-300 rounded"
                     placeholder="Enter your shipping address"
                     value={shippingAddress}
                     onChange={(e) => setShippingAddress(e.target.value)}
-                    rows={4} // Pass a number instead of a string
+                    rows={4}
                 />
             </div>
 
             {/* Payment Method */}
             <div className="mb-6">
-                <h2 className="text-2xl font-semibold mb-4">Payment Method</h2>
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4">Payment Method</h2>
                 <select
                     className="w-full p-2 border border-gray-300 rounded"
                     value={paymentMethod}
@@ -146,11 +155,11 @@ export default function CheckoutPage() {
 
             {/* Total */}
             <div className="mb-6">
-                <h2 className="text-2xl font-semibold mb-4">Order Summary</h2>
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4">Order Summary</h2>
                 <div className="border p-4 rounded-lg">
                     <p className="text-lg">Total: ${total.toFixed(2)}</p>
                     <button
-                        className="mt-4 px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700"
+                        className="mt-4 w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700"
                         onClick={handlePlaceOrder}
                     >
                         Place Order

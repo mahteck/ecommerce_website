@@ -52,11 +52,11 @@ export default function Navbar() {
             {/* Second Row: Logo and Icons */}
             <div className="relative">
                 <div className="container mx-auto flex justify-between items-center px-6 py-4">
-                    {/* Left Spacer */}
-                    <div className="w-6 h-6"></div>
+                    {/* Left Spacer (for mobile view) */}
+                    <div className="w-6 h-6 md:w-0 md:h-0"></div>
 
                     {/* Center: Company Logo */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2">
+                    <div className="flex-1 flex justify-center md:justify-start">
                         <Link href="/">
                             <div className="text-2xl md:text-3xl font-extrabold text-gray-800 text-center transition hover:scale-110 transform duration-300">
                                 <span className="bg-gradient-to-r from-purple-500 to-indigo-500 text-transparent bg-clip-text">
@@ -103,15 +103,21 @@ export default function Navbar() {
                     <ul className="flex flex-col md:flex-row items-center gap-6">
                         {categories.map((category, index) => (
                             <li key={`category-${index}`} className="relative group">
-                                <Link href={`/Category/${category.slug}`} className="text-gray-800 hover:text-purple-600 font-medium">
-                                    {category.name}
+                                <Link href={`/Category/${category.slug}`}
+                                    onClick={() => setIsOpen(false)}>
+                                    <div className="text-gray-800 hover:text-purple-600 font-medium">
+                                        {category.name}
+                                    </div>
                                 </Link>
                                 {category.SubCategory && category.SubCategory.length > 0 && ( // Safe check
                                     <ul className="absolute left-0 hidden group-hover:flex flex-col bg-white text-gray-800 shadow-lg p-4 mt-2 w-48 z-10 transition duration-200 ease-in-out">
                                         {category.SubCategory.map((SubCategory, subIndex) => (
                                             <li key={`subcategory-${index}-${subIndex}`} className="mb-2">
-                                                <Link href={`/SubCategory/${SubCategory.slug}`} className="hover:underline">
-                                                    {SubCategory.name}
+                                                <Link href={`/SubCategory/${SubCategory.slug}`}
+                                                    onClick={() => setIsOpen(false)}>
+                                                    <div className="hover:underline">
+                                                        {SubCategory.name}
+                                                    </div>
                                                 </Link>
                                             </li>
                                         ))}
